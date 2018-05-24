@@ -22,6 +22,8 @@ public class TreeNode {
 	@Getter(value = AccessLevel.NONE)
 	private boolean nested;
 	private String fieldName;
+	private boolean parentHidden;
+	private boolean nullValue;
 
 	public List<TreeNode> getChildren() {
 		if (children == null) {

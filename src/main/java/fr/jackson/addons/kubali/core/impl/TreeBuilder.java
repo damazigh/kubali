@@ -39,7 +39,8 @@ public class TreeBuilder implements ITreeBuilder {
 		TreeNode actualNode = new TreeNode();
 		populate(actualNode, false, obj);
 		actualNode.setFieldName(introspector.findName(field));
-		if (!actualNode.isSimple() && actualNode.hasNested()) {
+		if (obj != null && !actualNode.isSimple() && actualNode.hasNested()) {
+			actualNode.setNullValue(false);
 			introspector.introspect(obj, true).parallelStream()
 					.forEach(f -> actualNode.getChildren().add(handleSimpleField(f)));
 			if (actualNode.hasNested()) {
@@ -61,8 +62,16 @@ public class TreeBuilder implements ITreeBuilder {
 	}
 
 	private void populate(TreeNode node, boolean isRoot, Object obj) {
-		node.setNested(introspector.hasNested(obj));
+		if (obj != null) {
+			node.setNested(introspector.hasNested(obj));
+			node.setSimple(!introspector.isNotBaseType(obj.getClass()));
+			node.setNullValue(false);
+		} else {
+			// by default null value will be considered as simple value
+			node.setNested(false);
+			node.setSimple(true);
+			node.setNullValue(true);
+		}
 		node.setRoot(isRoot);
-		node.setSimple(!introspector.isNotBaseType(obj.getClass()));
 	}
 }
