@@ -1,5 +1,6 @@
 package fr.jackson.addons.kubali.core;
 
+import java.util.List;
 import java.util.Optional;
 
 import fr.jackson.addons.kubali.model.TreeNode;
@@ -16,7 +17,8 @@ public interface ITreeHelper {
 
 	/**
 	 * For a given {@link String} which represents a pattern of the fields that
-	 * should be serialized<br/>
+	 * should be serialized, the splittator paremter can be specified in
+	 * configuration <br/>
 	 * <b><u>Examples</u></b>
 	 * <ul>
 	 * <li>user.profile will gives : {@code new String [] {"user",
@@ -27,5 +29,14 @@ public interface ITreeHelper {
 	 * 
 	 * @return
 	 */
-	String[] transform(String criteria);
+	List<String> transform(String criteria);
+
+	/**
+	 * This method mark the children of node with the flag
+	 * {@link TreeNode#setParentHidden(true))}
+	 * 
+	 * @param node
+	 */
+	void markChildrenOfHidden(TreeNode node);
+
 }

@@ -2,12 +2,15 @@ package fr.jackson.addons.kubali.core.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,8 +26,8 @@ import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.StringMemberValue;
 import lombok.Setter;
 
-@Component
 public class Introspector implements IIntrospector {
+	private static final Logger LOG = LoggerFactory.getLogger(Introspector.class);
 
 	@Setter
 	@Autowired
@@ -41,11 +44,6 @@ public class Introspector implements IIntrospector {
 	}
 
 	@Override
-	public boolean isCollection(Field f) {
-		return false;
-	}
-
-	@Override
 	public String findName(Field f) {
 		JsonProperty ann = f.getAnnotation(JsonProperty.class);
 		if (ann != null) {
@@ -57,7 +55,7 @@ public class Introspector implements IIntrospector {
 	@Override
 	public List<Field> introspect(Object obj) {
 
-		return Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getAnnotation(JsonIgnore.class) != null)
+		return Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getAnnotation(JsonIgnore.class) == null)
 				.collect(Collectors.toList());
 	}
 
@@ -78,6 +76,7 @@ public class Introspector implements IIntrospector {
 			cf.addAttribute(attr);
 			return true;
 		} catch (NotFoundException e) {
+			LOG.error("error occured during adding annotation to {}", clazz.getSimpleName(), e);
 			return false;
 		}
 	}
@@ -88,8 +87,7 @@ public class Introspector implements IIntrospector {
 
 		return allFields.stream().filter(f -> {
 			Annotation ann = f.getAnnotation(clazz);
-			boolean result = notNull ? ann != null : ann == null;
-			return result;
+			return notNull ? ann != null : ann == null;
 		}).collect(Collectors.toList());
 	}
 
@@ -101,10 +99,28 @@ public class Introspector implements IIntrospector {
 			if (invocationResult == null) {
 				return false;
 			}
-			boolean result = javaBaseType ? isNotBaseType(invocationResult.getClass())
-					: !isNotBaseType(invocationResult.getClass());
-			return result;
+			return (javaBaseType ? isNotBaseType(invocationResult.getClass())
+					: !isNotBaseType(invocationResult.getClass())) && !isASubTypeOf(field, Collection.class);
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public <T> List<Field> introspect(Object obj, Class<T> clazz) {
+		List<Field> allFields = introspect(obj);
+		return allFields.stream().filter(field -> isASubTypeOf(field, clazz)).collect(Collectors.toList());
+	}
+
+	@Override
+	public <T> Method findMethod(String name, Class<T> clazz) {
+		try {
+			return clazz.getDeclaredMethod(name);
+		} catch (NoSuchMethodException e) {
+			LOG.debug("cannot find the method {} in the class {}", name, clazz.getSimpleName());
+			LOG.error("Error", e);
+		} catch (SecurityException e) {
+			LOG.error("the class has a security manager attached to it cannot reflect the method", e);
+		}
+		return null;
 	}
 
 }
