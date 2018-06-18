@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 Amazigh DJEBARRI
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
+
 package fr.jackson.addons.kubali.core;
 
 import java.util.List;
@@ -7,7 +23,8 @@ import fr.jackson.addons.kubali.model.TreeNode;
 
 public interface ITreeHelper {
 	/**
-	 * Search is unidirectional, try to retrieve a node by its given name
+	 * Search is unidirectional, try to retrieve the parent node of a given one
+	 * by it's name
 	 * 
 	 * @param root
 	 *            the root from which node the search starts

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 Amazigh DJEBARRI
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
+
 package fr.jackson.addons.kubali.core.impl;
 
 import java.util.Arrays;
@@ -37,16 +53,20 @@ public class TreeHelper implements ITreeHelper {
 			if (front != null) {
 				// clear the queue no need to process other graĥ
 				if (StringUtils.equalsIgnoreCase(front.getFieldName(), lookingFor)) {
-					LOG.info("{} node retrieved : clearing the queue");
+					LOG.info("{} node retrieved : clearing the queue", lookingFor);
 					queue.clear();
 					lookingFor = getActualName(names);
-					LOG.debug("The looked for node update to : {}", lookingFor);
+					LOG.debug("The looked for node updated to : {}", lookingFor);
 				}
 				if (lookingFor == null) {
 					LOG.info("The final node is retrieved");
-					return Optional.of(front);
+					if (front.getParent() != null) {
+						return Optional.of(front.getParent());
+					} else {
+						return Optional.of(front);
+					}
 				} else {
-					LOG.debug("{} element added to queue", front.getChildren());
+					LOG.debug("{} element added to queue", front.getChildren().size());
 					queue.addAll(front.getChildren());
 				}
 			}
@@ -60,7 +80,8 @@ public class TreeHelper implements ITreeHelper {
 		if (StringUtils.isEmpty(criteria)) {
 			return Collections.emptyList();
 		}
-		return Arrays.stream(criteria.split(propertyProvider.getFieldSplitator())).collect(Collectors.toList());
+		return Arrays.stream(StringUtils.split(criteria, propertyProvider.getFieldSplitator()))
+				.collect(Collectors.toList());
 	}
 
 	private String getActualName(List<String> names) {

@@ -16,8 +16,8 @@ limitations under the License.
 
 package fr.jackson.addons.kubali.core;
 
-import fr.jackson.addons.kubali.model.TreeNode;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
-public interface ITreeBuilder {
-	<T> TreeNode build(T obj);
+public interface ITranslator {
+	SimpleFilterProvider translate();
 }

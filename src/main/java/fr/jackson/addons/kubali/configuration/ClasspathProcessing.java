@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package fr.jackson.addons.kubali.core;
+package fr.jackson.addons.kubali.configuration;
 
-import fr.jackson.addons.kubali.model.TreeNode;
-
-public interface ITreeBuilder {
-	<T> TreeNode build(T obj);
+@FunctionalInterface
+public interface ClasspathProcessing {
+	String baseModelPackage();
 }
