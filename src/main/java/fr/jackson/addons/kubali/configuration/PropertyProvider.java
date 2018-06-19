@@ -19,13 +19,48 @@ package fr.jackson.addons.kubali.configuration;
 /**
  * 
  * @author adjebarri
+ * @since 0.0.1
+ * 
+ *        <p>
+ *        Configuration interface. To use this library in an other project this
+ *        class should be implemented
+ *        </p>
+ * 
+ * @see SpringProvider
  *
  */
 public interface PropertyProvider {
 
+	/**
+	 * <p>
+	 * This is configuration method that should be implemented. it defines the
+	 * hierarchical character that is used for nested path
+	 * </p>
+	 * <u>Example :</u><br/>
+	 * : user.address.town : method should return -> <b>.</b>
+	 * 
+	 * @return The hierarchical separator for nested path filtering
+	 */
 	String getFieldSplitator();
 
+	/**
+	 * <p>
+	 * Same as above, configuration method that defines the separator between
+	 * the requested fields to bee included in the response
+	 * </p>
+	 * <u>Example :</u><br/>
+	 * : A consumer of webservice specifies these fields : user.address,name,age
+	 * : the below method should return -> <b>,</b>
+	 * 
+	 * @return The separator between the requested fields
+	 */
 	String getFieldSeparator();
 
+	/**
+	 * will be removed in the next release
+	 * 
+	 * @return The default root filter name
+	 */
+	@Deprecated
 	String getDefaultFilterName();
 }

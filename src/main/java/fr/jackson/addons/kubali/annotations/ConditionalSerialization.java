@@ -21,6 +21,27 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import fr.jackson.addons.kubali.core.IIntrospector;
+import fr.jackson.addons.kubali.core.processors.IContext;
+import fr.jackson.addons.kubali.core.processors.impl.Context;
+import fr.jackson.addons.kubali.model.Filter;
+
+/**
+ * 
+ * @author adjebarri
+ * @since 0.0.1
+ *        <p>
+ *        This annotation allows to mark a class as a conditional serializable
+ *        entity. Indeed, at startup the classpath resources will be scanned in
+ *        order to determine which entities are annotated with
+ *        {@link ConditionalSerialization}. A corresponding default
+ *        {@link Filter} will be associated to each entity and stored in the
+ *        {@link Context}.
+ *        </p>
+ * 
+ * @see IContext
+ * @see IIntrospector
+ */
 @Target({ ElementType.FIELD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConditionalSerialization {

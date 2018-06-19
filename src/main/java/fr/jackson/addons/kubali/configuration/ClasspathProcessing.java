@@ -16,6 +16,16 @@ limitations under the License.
 
 package fr.jackson.addons.kubali.configuration;
 
+/**
+ * @since 0.0.1
+ * @author adjebarri
+ *         <p>
+ *         A class that allows to define the root base package where the
+ *         entities are declared.
+ *         </p>
+ * @see PropertyProvider
+ * @see SpringProvider
+ */
 @FunctionalInterface
 public interface ClasspathProcessing {
 	String baseModelPackage();
