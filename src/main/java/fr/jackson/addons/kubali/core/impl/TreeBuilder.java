@@ -101,20 +101,19 @@ public class TreeBuilder implements ITreeBuilder {
 			if (Collection.class.isAssignableFrom(obj.getClass()) && m != null) {
 				Object inner = invoker.invokeMethod(m, new Object[] { 0 }, obj);
 				if (inner != null) {
-					node = new TreeNode();
-					node.setFieldName(introspector.findName(f));
-					node.setParent(parent);
-					node.setClazz(inner.getClass());
-					// TODO handle collection of collection
-					node.setCollection(false);
-					node.setNested(introspector.hasNested(inner));
-					node.setSimple(!introspector.isNotBaseType(obj.getClass()));
-
-					if (node.hasNested()) {
-						final TreeNode nodeToProcess = node;
-						List<TreeNode> recursiveResult = introspector.introspect(inner, false).stream()
-								.map(fld -> doProcess(fld, obj, nodeToProcess)).collect(Collectors.toList());
-						node.getChildren().addAll(recursiveResult);
+					if (introspector.hasNested(inner)) {
+						node = build(inner);
+						node.setParent(parent);
+						node.setFieldName(introspector.findName(f));
+					} else {
+						node = new TreeNode();
+						node.setFieldName(introspector.findName(f));
+						node.setParent(parent);
+						node.setClazz(inner.getClass());
+						// TODO handle collection of collection
+						node.setCollection(false);
+						node.setNested(introspector.hasNested(inner));
+						node.setSimple(!introspector.isNotBaseType(obj.getClass()));
 					}
 
 				} else {

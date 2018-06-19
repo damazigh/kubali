@@ -44,6 +44,7 @@ public class Context implements IContext {
 	private List<Filter> filters = new ArrayList<>();
 	private List<Filter> defaultFilters = new ArrayList<>();
 	private boolean processed = false;
+	private List<Pair<String, String>> additionalFieldToIgnore = new ArrayList<>();
 
 	@Override
 	public void addClassName(String className) {
@@ -67,7 +68,7 @@ public class Context implements IContext {
 
 	@Override
 	public boolean isProcessed() {
-		return !processedClassName.isEmpty();
+		return processed;
 	}
 
 	@Override
@@ -77,7 +78,8 @@ public class Context implements IContext {
 		filters.addAll(notInFilters);
 		return filters.stream().map(f -> {
 			if (f.isSerializeAll()) {
-				return Pair.of(f.getFilterName(), SimpleBeanPropertyFilter.serializeAll());
+				return Pair.of(f.getFilterName(),
+						SimpleBeanPropertyFilter.serializeAllExcept(buildAdditionalProsToIgnore(f.getFilterName())));
 			} else {
 				return Pair.of(f.getFilterName(),
 						SimpleBeanPropertyFilter.filterOutAllExcept(f.getPropertyToSerialize()));
@@ -110,6 +112,10 @@ public class Context implements IContext {
 		return filters.stream().filter(f -> StringUtils.equals(f.getId(), id)).findFirst().orElse(null);
 	}
 
+	public Filter findDefaultById(String id) {
+		return defaultFilters.stream().filter(f -> StringUtils.equals(f.getId(), id)).findFirst().orElse(null);
+	}
+
 	@Override
 	public void addDefault(Filter f) {
 		defaultFilters.add(f);
@@ -119,13 +125,17 @@ public class Context implements IContext {
 	public void merge(Filter f) {
 		OptionalInt optIndex = IntStream.range(0, filters.size()).filter(i -> findById(f.getId()) != null).findFirst();
 		if (optIndex.isPresent()) {
-			Set<String> set = Filter.getPropertiesToMerge(f.getPropertyToSerialize(), f.getPropertyToSerialize());
-			filters.get(optIndex.getAsInt()).getPropertyToSerialize().addAll(set);
+			int index = optIndex.getAsInt();
+			Set<String> set = Filter.getPropertiesToMerge(f.getPropertyToSerialize(),
+					filters.get(index).getPropertyToSerialize());
+			set = Filter.getPropertiesToMerge(set, buildAdditionalProsToIgnore(f.getFilterName()));
+			filters.get(index).getPropertyToSerialize().addAll(set);
 		} else {
 			filters.add(f);
 		}
 	}
 
+	@Override
 	public void processed() {
 		processed = true;
 	}
@@ -135,6 +145,19 @@ public class Context implements IContext {
 		processed = false;
 		processedClassName.clear();
 		filters.clear();
+		additionalFieldToIgnore.clear();
 	}
 
+	private Set<String> buildAdditionalProsToIgnore(String filterName) {
+		return additionalFieldToIgnore.stream().filter(ad -> StringUtils.equals(ad.getLeft(), filterName))
+				.map(p -> p.getRight()).collect(Collectors.toSet());
+	}
+
+	@Override
+	public void setAdditionalFieldToIgnore(List<Pair<String, String>> props) {
+		if (props == null) {
+			return;
+		}
+		this.additionalFieldToIgnore = props;
+	}
 }

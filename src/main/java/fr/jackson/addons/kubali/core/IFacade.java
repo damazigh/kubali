@@ -16,8 +16,14 @@ limitations under the License.
 
 package fr.jackson.addons.kubali.core;
 
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 public interface IFacade {
 	SimpleFilterProvider process(Object obj, String fieldsToSerialize);
+
+	void setPropertyToIgnore(List<Pair<String, String>> props);
 }

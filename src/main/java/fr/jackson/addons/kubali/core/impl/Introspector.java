@@ -19,13 +19,11 @@ package fr.jackson.addons.kubali.core.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -137,8 +135,8 @@ public class Introspector implements IIntrospector {
 			if (invocationResult == null) {
 				return false;
 			}
-			return (javaBaseType ? isNotBaseType(invocationResult.getClass())
-					: !isNotBaseType(invocationResult.getClass())) && !isASubTypeOf(field, Collection.class);
+			return (javaBaseType ? !isNotBaseType(invocationResult.getClass())
+					: isNotBaseType(invocationResult.getClass())) && !isASubTypeOf(field, Collection.class);
 		}).collect(Collectors.toList());
 	}
 
@@ -258,19 +256,10 @@ public class Introspector implements IIntrospector {
 		path = StringUtils.remove(path, "file:" + File.separator);
 		path = StringUtils.remove(path, "file:///");
 		path = StringUtils.remove(path, "file://");
+		if (File.separator.equals("/")) {
+			path = "/" + path;
+		}
 		return path;
 	}
 
-	private String encodeURIComponent(String s) {
-		String result;
-
-		try {
-			result = URLEncoder.encode(s, "UTF-8").replaceAll("\\+", "%20").replaceAll("\\%21", "!")
-					.replaceAll("\\%27", "'").replaceAll("\\%28", "(").replaceAll("\\%29", ")")
-					.replaceAll("\\%7E", "~");
-		} catch (UnsupportedEncodingException e) {
-			result = s;
-		}
-		return result;
-	}
 }

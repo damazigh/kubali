@@ -119,7 +119,7 @@ public class DefaultProcessor implements IProcessor {
 		if (StringUtils.isNotEmpty(criteria) && StringUtils.contains(criteria, propertyProvider.getFieldSplitator())) {
 			String[] tab = StringUtils.split(criteria, propertyProvider.getFieldSplitator());
 			for (int i = 0; i < tab.length - 1; i++) {
-				avoidParentFiltering(node, tab[i]);
+				avoidParentFiltering(node, tab[i], tab.length - 1 - i);
 			}
 			LOG.info("Criteria : {} - retrieved name {}", criteria, tab[tab.length - 1]);
 			return tab[tab.length - 1];
@@ -128,11 +128,21 @@ public class DefaultProcessor implements IProcessor {
 		return "";
 	}
 
-	private void avoidParentFiltering(TreeNode node, String criteria) {
-		Filter parent = context.findById(node.getParent().getClazz().getName());
-		if (parent != null) {
-			parent.update(criteria);
-			context.merge(parent);
+	private void avoidParentFiltering(TreeNode node, String criteria, int index) {
+		TreeNode parent = node.getParent();
+		Filter parentFilter = context.findById(parent.getClazz().getName());
+		while (parentFilter == null && index > 1) {
+			parent = parent.getParent();
+			if (parent != null) {
+				parentFilter = context.findById(parent.getClazz().getName());
+			}
+			--index;
 		}
+		if (parentFilter == null) {
+			Filter f = context.findDefaultById(parent.getClazz().getName());
+			parentFilter = Filter.from(f);
+		}
+		parentFilter.update(criteria);
+		context.merge(parentFilter);
 	}
 }

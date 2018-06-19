@@ -17,9 +17,11 @@ limitations under the License.
 package fr.jackson.addons.kubali.core.impl;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -29,6 +31,7 @@ import fr.jackson.addons.kubali.configuration.ClasspathProcessing;
 import fr.jackson.addons.kubali.core.IFacade;
 import fr.jackson.addons.kubali.core.IIntrospector;
 import fr.jackson.addons.kubali.core.ITranslator;
+import fr.jackson.addons.kubali.core.processors.IContext;
 import fr.jackson.addons.kubali.core.processors.IProcessor;
 import lombok.Setter;
 
@@ -50,14 +53,26 @@ public class Facade implements IFacade {
 	@Autowired
 	private ClasspathProcessing classpathProcessor;
 
+	@Setter
+	@Autowired
+	private IContext context;
+
+	private List<Pair<String, String>> explicitlyIgnored;
+
 	@Override
 	public SimpleFilterProvider process(Object obj, String fieldsToSerialize) {
 		processor.process(obj, fieldsToSerialize);
+		context.setAdditionalFieldToIgnore(explicitlyIgnored);
 		return translator.translate();
 	}
 
 	@PostConstruct
 	private void postConstruct() throws IOException {
 		introspector.AddAnnoToClassInPackage(classpathProcessor.baseModelPackage(), ConditionalSerialization.class);
+	}
+
+	@Override
+	public void setPropertyToIgnore(List<Pair<String, String>> props) {
+		explicitlyIgnored = props;
 	}
 }

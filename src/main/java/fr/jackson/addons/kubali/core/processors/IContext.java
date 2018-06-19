@@ -48,4 +48,8 @@ public interface IContext {
 	void clear();
 
 	void processed();
+
+	void setAdditionalFieldToIgnore(List<Pair<String, String>> props);
+
+	Filter findDefaultById(String id);
 }

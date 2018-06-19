@@ -96,10 +96,19 @@ public class Filter {
 		return result;
 	}
 
+	public static Filter from(Filter f) {
+		Filter filter = new Filter();
+		filter.setFilterName(f.getFilterName());
+		filter.setId(f.getId());
+		filter.setSerializeAll(false);
+		return filter;
+	}
+
 	public Filter(boolean status) {
 		serializeAll = false;
 	}
 
 	public Filter() {
 	}
+
 }
