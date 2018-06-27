@@ -51,7 +51,7 @@ public class TreeHelper implements ITreeHelper {
 			LOG.debug("looking for the node with the name {}", lookingFor);
 			TreeNode front = queue.poll();
 			if (front != null) {
-				// clear the queue no need to process other graĥ
+				// clear the queue no need to process other graph
 				if (StringUtils.equalsIgnoreCase(front.getFieldName(), lookingFor)) {
 					LOG.info("{} node retrieved : clearing the queue", lookingFor);
 					queue.clear();
@@ -93,21 +93,7 @@ public class TreeHelper implements ITreeHelper {
 		}
 		String result = names.get(0);
 		names.remove(0);
+		LOG.info("Actual name : {}", result);
 		return result;
-	}
-
-	@Override
-	public void markChildrenOfHidden(TreeNode node) {
-		LOG.info("marking the children of the node {} with the flag hiddenParent = true", node.getFieldName());
-		Queue<TreeNode> queue = new PriorityQueue<>();
-		queue.offer(node);
-		while (!queue.isEmpty()) {
-			TreeNode front = queue.poll();
-			if (front != null) {
-				LOG.debug("node {} marked with the flag", front.getFieldName());
-				front.setParentHidden(true);
-				queue.addAll(front.getChildren());
-			}
-		}
 	}
 }
