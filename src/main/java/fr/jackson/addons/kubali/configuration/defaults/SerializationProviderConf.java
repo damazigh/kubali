@@ -1,4 +1,4 @@
-package fr.jackson.addons.kubali;
+package fr.jackson.addons.kubali.configuration.defaults;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
