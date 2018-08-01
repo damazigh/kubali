@@ -22,8 +22,22 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
+/**
+ * Entry point class that is called at spring's start up
+ * 
+ * @author adjebarri
+ * @since 0.0.1
+ *
+ */
 public interface IFacade {
 	SimpleFilterProvider process(Object obj, String fieldsToSerialize);
 
+	/**
+	 * A method that allows an additional filtering mechanism. it could be useful to
+	 * avoid duplication of class.
+	 * 
+	 * @param props
+	 *            a set of pair object (filterName <=> property to ignore)
+	 */
 	void setPropertyToIgnore(List<Pair<String, String>> props);
 }

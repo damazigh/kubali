@@ -35,21 +35,21 @@ import fr.jackson.addons.kubali.model.TreeNode;
  */
 public interface ITreeHelper {
 	/**
-	 * Search is unidirectional, try to retrieve the parent node of a given one
-	 * by it's name !<br/>
-	 * This method uses {@link ITreeHelper#transform(String)} to transform the
-	 * param criteria into a list, then a queue is created the root element is
-	 * put into it.<br/>
-	 * <b>If</b> the field name represent a nested node (<u>not direct child of
-	 * the root element</u>) <b>then</b> we will split another time the field
-	 * name {@link PropertyProvider#getFieldSplitator()} in order to get the
-	 * real graph of the object.<br/>
-	 * After building the real field name in a loop it will get the front
-	 * element of the queue <b>if</b> the node's field name equals the looked
-	 * for name we return the parent's node if exist or the node itself, else it
-	 * will add the children of the front node to the queue to be processed<br/>
-	 * <b> Note that if the node is nested it will just pass to the next
-	 * elementto process !</b><br/>
+	 * Search is unidirectional, try to retrieve the parent node of a given one by
+	 * it's name !<br/>
+	 * This method uses {@link ITreeHelper#transform(String)} to transform the param
+	 * criteria into a list, then a queue is created the root element is put into
+	 * it.<br/>
+	 * <b>If</b> the field name represent a nested node (<u>not direct child of the
+	 * root element</u>) <b>then</b> we will split another time the field name
+	 * {@link PropertyProvider#getFieldSplitator()} in order to get the real graph
+	 * of the object.<br/>
+	 * After building the real field name in a loop it will get the front element of
+	 * the queue <b>if</b> the node's field name equals the looked for name we
+	 * return the parent's node if exist or the node itself, else it will add the
+	 * children of the front node to the queue to be processed<br/>
+	 * <b> Note that if the node is nested it will just pass to the next elementto
+	 * process !</b><br/>
 	 * 
 	 * <pre>
 	 * Lets say that we have this tree :
@@ -78,19 +78,18 @@ public interface ITreeHelper {
 	 * @param criteria
 	 *            The fields to serialize as a String separated by configured
 	 *            separator
-	 * @return {@link Optional} which contains the result of the search neither
-	 *         an empty one
+	 * @return {@link Optional} which contains the result of the search otherwise an
+	 *         empty one
 	 */
 	Optional<TreeNode> findByName(TreeNode root, String criteria);
 
 	/**
 	 * For a given {@link String} 'fields to serialize' this method uses
-	 * {@link PropertyProvider#getFieldSeparator()} to split the given String
-	 * and construct a {@link List} of the field name to serialize.<br/>
+	 * {@link PropertyProvider#getFieldSeparator()} to split the given String and
+	 * construct a {@link List} of the field name to serialize.<br/>
 	 * <b><u>Examples</u></b>
 	 * <ul>
-	 * <li>user.profile will gives : {@code new String [] {"user",
-	 * "profile"}}</li>
+	 * <li>user.profile will gives : {@code new String [] {"user", "profile"}}</li>
 	 * </ul>
 	 * 
 	 * @param criteria

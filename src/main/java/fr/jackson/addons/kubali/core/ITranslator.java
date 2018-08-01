@@ -19,5 +19,11 @@ package fr.jackson.addons.kubali.core;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 public interface ITranslator {
+	/**
+	 * translate the context into a {@link SimpleFilterProvider} that contains
+	 * filtered property
+	 * 
+	 * @return the simple filter provider applied to object mapper
+	 */
 	SimpleFilterProvider translate();
 }

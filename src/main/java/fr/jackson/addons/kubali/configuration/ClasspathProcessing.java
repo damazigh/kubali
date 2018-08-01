@@ -28,5 +28,11 @@ package fr.jackson.addons.kubali.configuration;
  */
 @FunctionalInterface
 public interface ClasspathProcessing {
+
+	/**
+	 * 
+	 * @return the base package to be scanned by the library to find which entities
+	 *         should be serialized partially
+	 */
 	String baseModelPackage();
 }

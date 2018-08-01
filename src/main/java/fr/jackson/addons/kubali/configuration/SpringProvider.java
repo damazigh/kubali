@@ -17,7 +17,6 @@ limitations under the License.
 package fr.jackson.addons.kubali.configuration;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import fr.jackson.addons.kubali.core.IFacade;
 import fr.jackson.addons.kubali.core.IIntrospector;
@@ -36,7 +35,19 @@ import fr.jackson.addons.kubali.core.processors.IProcessor;
 import fr.jackson.addons.kubali.core.processors.impl.Context;
 import fr.jackson.addons.kubali.core.processors.impl.DefaultProcessor;
 
-@Configuration
+/**
+ * Configuration base class which defines the needed beans in the app. It should
+ * be extended by the targeted project to makes the lib's works.<br/>
+ * {@link SpringProvider#classpathProcessing()} and
+ * {@link SpringProvider#propertyProvider()} should be overriden by the targeted
+ * project conf
+ * 
+ * @see PropertyProvider
+ * @see ClasspathProcessing
+ * @author adjebarri
+ * @Since 0.0.1
+ *
+ */
 public abstract class SpringProvider {
 
 	@Bean

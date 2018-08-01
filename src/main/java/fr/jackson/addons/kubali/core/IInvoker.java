@@ -19,9 +19,34 @@ package fr.jackson.addons.kubali.core;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+/**
+ * interface that provides some useful method in order to invoke a field method
+ * in a non nullable object
+ * 
+ * @author adjebarri
+ * @since 0.0.1
+ *
+ */
 public interface IInvoker {
-
+	/**
+	 * 
+	 * @param field
+	 *            an attribute of object (result of the introspection)
+	 * @param obj
+	 *            the introspected object
+	 * @return call the getter of the field, if an exception occurs return null
+	 */
 	Object invokeGetter(Field field, Object obj);
 
+	/**
+	 * 
+	 * @param m
+	 *            targeted method to execute
+	 * @param args
+	 *            the taken method argument
+	 * @param o
+	 *            the object where to apply the methpd
+	 * @return result of execution, if an exception occurs return null
+	 */
 	Object invokeMethod(Method m, Object[] args, Object o);
 }
